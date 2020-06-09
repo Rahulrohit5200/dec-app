@@ -6,6 +6,8 @@ import Approuter from "./routers/Approuter";
 import {addExpense} from "./action/expences";
 import {setTextFilter} from "./action/filters";
 import getVisibleExpenses from "./selector/expences"
+import "./playground/firebase-promises";
+import "./firebase/firebase";
 const store=configureStore();
 // store.subscribe(()=>{
 //     console.log(store.getState());
