@@ -4,10 +4,12 @@ import {Provider} from "react-redux";
 import configureStore from "./store/configureStore";
 import Approuter from "./routers/Approuter";
 import {startSetExpenses} from "./action/expences";
-import {setTextFilter} from "./action/filters";
+import {Login,Logout} from "./action/auth";
 import getVisibleExpenses from "./selector/expences"
 import "./playground/firebase-promises";
 import "./firebase/firebase";
+import { firebase } from './firebase/firebase';
+import {history} from "./routers/Approuter";
 const store=configureStore();
 // store.subscribe(()=>{
 //     console.log(store.getState());
@@ -31,13 +33,9 @@ const m=(
 //file then goes through this entire process again, re-rendering our Loading message while it sets the state 
 //equal to a new array of expenses that are fetched from our database call within startSetExpenses.
 
-
-
 ReactDOM.render(<p>...Loading</p>,document.getElementById("one"));
-store.dispatch(startSetExpenses()).then(()=>{
 
-    ReactDOM.render(m,document.getElementById("one"));
-})
+
 //startsetexpenses returns a function given below->
 //that function returns a promise->
 //in that one .then is already present after completing that then it will complete then of above
@@ -55,3 +53,38 @@ store.dispatch(startSetExpenses()).then(()=>{
 //       dispatch(setExpenses(x));
 //     })
 //   }
+
+// var user = firebase.auth().currentUser;
+
+// const fn=(user)=>
+// {
+//     if(user){
+//         console.log("loginjdfnv")
+//     }
+//     else
+//     console.log("logout dfv");
+// }
+// fn(user);
+
+
+//firebase.auth().onAuthStateChanged runs everytime when user changes.
+firebase.auth().onAuthStateChanged((user)=>{
+    
+    if(user){//so now without logged in i cant redirect to diffrent page just by changing URL
+        // console.log(user.uid)
+        store.dispatch(Login(user.uid));                // we are not using Login inside our startLogin bcoz startLogin and 
+        store.dispatch(startSetExpenses()).then(()=>{   //startLogout work only when button login or logout 
+                                                        //clicked but for 1st time we want to run it without any button clicked                  
+            ReactDOM.render(m,document.getElementById("one"));
+        })
+        
+        if(history.location.pathname==="/")//history.location.pathname stores current location
+        history.push("/dashboard");
+        }
+    else
+    {
+    store.dispatch(Logout());
+    history.push("/");
+    ReactDOM.render(m,document.getElementById("one"));//so as to render login page otherwise it will be on loading... page indefinitely
+    }
+})

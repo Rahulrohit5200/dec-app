@@ -11,6 +11,6 @@ const firebaseConfig = {
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
-  
+  const GoogleAuthProvider=new firebase.auth.GoogleAuthProvider();//this auth is diffrent auth().auth() is like a reference in database
   const database=firebase.database();
-  export {firebase, database as default}; //to use in our other file
+  export {firebase,GoogleAuthProvider, database as default}; //to use in our other file
